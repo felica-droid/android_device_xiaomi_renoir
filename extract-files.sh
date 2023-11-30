@@ -36,3 +36,20 @@ export DEVICE_COMMON=sm8350-common
 export VENDOR=xiaomi
 
 "./../../${VENDOR}/${DEVICE_COMMON}/extract-files.sh" "$@"
+
+function split_image() {
+    local radio_path="../../../vendor/${VENDOR}/${DEVICE}/radio"
+    echo "$radio_path"/"$1"
+
+    if [ -z "$radio_path"/"$1" ] || [ ! -f "$radio_path"/"$1" ]; then
+        echo "Error: "
+        return 1
+    fi
+
+    split --bytes=20M -d "$radio_path"/"$1" "$radio_path/$(basename "$1").part"
+
+    echo "  + Splitted $1"
+}
+
+split_image dsp.img
+split_image modem.img
